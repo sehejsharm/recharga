@@ -88,8 +88,12 @@ export type Founder = {
    * placeholder rather than a stock face.
    */
   portrait: string | null;
+  /** Short, factual responsibility areas shown as a list on the profile. */
+  focus: { title: string; body: string }[];
   /** Real, authoritative profile URLs for Person.sameAs. */
   sameAs: string[];
+  /** Topics the person works on — feeds Person.knowsAbout for topical relevance. */
+  knowsAbout: string[];
 };
 
 export const founders: Founder[] = [
@@ -100,13 +104,40 @@ export const founders: Founder[] = [
     summary:
       "Leads Recharga Chargine's direction and the engineering programme behind the RADAX generator architecture.",
     bio: [
-      "Sehej Sharma is the Founder and Chief Executive Officer of Recharga Chargine Pvt. Ltd., a DPIIT-recognised deep-tech clean-energy company based in Jaipur, Rajasthan.",
-      "He leads the company's direction — the engineering programme behind RADAX, and the licensing model that puts the architecture in manufacturers' hands rather than locking it inside a single product line.",
+      "Sehej Sharma is the Founder and Chief Executive Officer of Recharga Chargine Pvt. Ltd., a DPIIT-recognised deep-tech clean-energy company based in Jaipur, Rajasthan, India.",
+      "He founded the company around a narrow conviction: that the generator — the machine that actually converts rotation into electricity — is the part of the renewable-energy drivetrain with the most room left to improve, and the part the industry has changed least.",
+      "He leads Recharga Chargine's overall direction and the engineering programme behind RADAX, the company's hybrid axial\u2013radial flux, direct-drive generator architecture. That covers the technical direction of the architecture itself and the commercial model around it — licensing the design to the manufacturers who build machines at scale, rather than becoming a manufacturer and competing with them.",
+      "He works directly with the engineering and commercial teams evaluating RADAX, and represents Recharga Chargine to manufacturers, investors and the wider clean-energy community.",
     ],
-    portrait: null,
+    portrait: "/team/sehej-sharma.png",
+    focus: [
+      {
+        title: "Company direction",
+        body: "Setting what Recharga Chargine builds, in what order, and for whom.",
+      },
+      {
+        title: "The RADAX programme",
+        body: "Technical direction of the hybrid axial\u2013radial flux architecture.",
+      },
+      {
+        title: "Licensing strategy",
+        body: "The model that puts the architecture into manufacturers' hands.",
+      },
+      {
+        title: "Partners and investors",
+        body: "First point of contact for manufacturers, investors and press.",
+      },
+    ],
     sameAs: profileList(process.env.NEXT_PUBLIC_SEHEJ_PROFILES, [
       "https://www.linkedin.com/in/sehej-sharma-5b2151234/",
     ]),
+    knowsAbout: [
+      "Wind turbine generator technology",
+      "Axial flux and radial flux generator topologies",
+      "Permanent magnet direct drive generators",
+      "Deep-tech technology licensing",
+      "Clean energy startups in India",
+    ],
   },
   {
     slug: "ali-electricwala",
@@ -115,13 +146,40 @@ export const founders: Founder[] = [
     summary:
       "Responsible for how the RADAX programme is built, delivered and taken to manufacturers.",
     bio: [
-      "Ali Electricwala is the Co-Founder and Chief Operating Officer of Recharga Chargine Pvt. Ltd., a DPIIT-recognised deep-tech clean-energy company based in Jaipur, Rajasthan.",
-      "He runs execution — turning the architecture into something a manufacturer can evaluate, adopt and produce, and building the operational groundwork a licensing business runs on.",
+      "Ali Electricwala is the Co-Founder and Chief Operating Officer of Recharga Chargine Pvt. Ltd., a DPIIT-recognised deep-tech clean-energy company based in Jaipur, Rajasthan, India.",
+      "He co-founded the company to work on the same problem from the other side: not only whether a better generator architecture can be designed, but whether it can be built, evaluated and adopted by manufacturers who already produce at scale.",
+      "He runs execution across the RADAX programme — turning the architecture into something a manufacturer's engineering team can assess against a real platform, and building the operational groundwork a technology-licensing business depends on.",
+      "His work sits where the engineering programme meets the commercial one: how the architecture is delivered, how partnerships are structured, and how the company runs day to day.",
     ],
-    portrait: null,
+    portrait: "/team/ali-electricwala.png",
+    focus: [
+      {
+        title: "Programme execution",
+        body: "How RADAX moves from architecture to something a partner can adopt.",
+      },
+      {
+        title: "Manufacturer readiness",
+        body: "Making the design assessable against a real production platform.",
+      },
+      {
+        title: "Operations",
+        body: "The groundwork a licensing business runs on, day to day.",
+      },
+      {
+        title: "Partnerships",
+        body: "How agreements with manufacturers are structured and supported.",
+      },
+    ],
     sameAs: profileList(process.env.NEXT_PUBLIC_ALI_PROFILES, [
       "https://www.linkedin.com/in/ali-electricwala-190821261/",
     ]),
+    knowsAbout: [
+      "Wind turbine generator technology",
+      "Direct drive generator manufacturing",
+      "Technology licensing operations",
+      "Deep-tech programme delivery",
+      "Clean energy startups in India",
+    ],
   },
 ];
 
@@ -141,9 +199,11 @@ export const routes = [
   { path: "/technology", priority: 0.9, changeFrequency: "monthly" as const },
   { path: "/about", priority: 0.8, changeFrequency: "monthly" as const },
   { path: "/team", priority: 0.8, changeFrequency: "monthly" as const },
+  // Founder pages carry a high priority deliberately: winning
+  // "Sehej Sharma" and "Ali Electricwala" as queries is an explicit goal.
   ...founders.map((f) => ({
     path: `/team/${f.slug}`,
-    priority: 0.7,
+    priority: 0.9,
     changeFrequency: "monthly" as const,
   })),
   { path: "/contact", priority: 0.6, changeFrequency: "yearly" as const },

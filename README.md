@@ -104,10 +104,20 @@ silent audit that matches nothing would be worse than no audit.
 
 ### Honest schema
 
-JSON-LD builders omit any field they cannot fill truthfully. `sameAs` is
-absent rather than guessed; the postal address carries city and region until a
-street address is configured. An invented profile URL actively harms entity
-resolution, which is the exact thing the founder pages exist to win.
+JSON-LD builders omit any field they cannot fill truthfully — the postal
+address carries city and region until a street address is configured, and no
+role is ever invented for a real person.
+
+### Founder pages are built to win their own names
+
+`/team/<name>` is a `ProfilePage` wrapping a `Person` — the type Google
+documents for "a page about one person", which asserts that the page *is* that
+entity's profile rather than a page mentioning them. Each carries
+`givenName`/`familyName`, `jobTitle`, `image`, `worksFor`, `knowsAbout`,
+`homeLocation` and a real LinkedIn `sameAs`; a name-first `<title>`; the name
+alone as the `<h1>`; a substantial unique body; sitemap priority 0.9; and a
+share card carrying the person's photo. See CONTENT-TODO.md for what is left,
+which is indexing and off-page signals rather than code.
 
 ---
 

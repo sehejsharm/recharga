@@ -32,14 +32,40 @@ function Mark({ size = 46 }: { size?: number }) {
   );
 }
 
+/**
+ * Reads a portrait from /public at build time and returns it as a data URI.
+ *
+ * Satori cannot fetch relative URLs, so the bytes have to be inlined. Failure
+ * is non-fatal: the card falls back to the plain layout rather than breaking
+ * the build over a share image.
+ */
+export async function portraitDataUri(
+  publicPath: string | null,
+): Promise<string | null> {
+  if (!publicPath) return null;
+  try {
+    const { readFile } = await import("node:fs/promises");
+    const { join } = await import("node:path");
+    const bytes = await readFile(join(process.cwd(), "public", publicPath));
+    const ext = publicPath.split(".").pop()?.toLowerCase();
+    const mime = ext === "png" ? "image/png" : "image/jpeg";
+    return `data:${mime};base64,${bytes.toString("base64")}`;
+  } catch {
+    return null;
+  }
+}
+
 export function renderOgImage({
   eyebrow,
   title,
   footer = "Recharga Chargine Pvt. Ltd. · Jaipur, India",
+  portrait = null,
 }: {
   eyebrow: string;
   title: string;
   footer?: string;
+  /** Data URI for a portrait, shown on the right of the card. */
+  portrait?: string | null;
 }) {
   return new ImageResponse(
     (
@@ -88,37 +114,69 @@ export function renderOgImage({
         </div>
 
         {/* Body */}
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 56,
+          }}
+        >
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <div
+                style={{ width: 9, height: 9, backgroundColor: BRAND, display: "flex" }}
+              />
+              <span
+                style={{
+                  fontSize: 21,
+                  color: INK_3,
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                }}
+              >
+                {eyebrow}
+              </span>
+            </div>
+
             <div
-              style={{ width: 9, height: 9, backgroundColor: BRAND, display: "flex" }}
-            />
-            <span
               style={{
-                fontSize: 21,
-                color: INK_3,
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
+                marginTop: 30,
+                fontSize: title.length > 62 ? 62 : 74,
+                lineHeight: 1.06,
+                color: INK,
+                letterSpacing: "-0.035em",
+                fontWeight: 600,
+                maxWidth: portrait ? 620 : 960,
+                display: "flex",
               }}
             >
-              {eyebrow}
-            </span>
+              {title}
+            </div>
           </div>
 
-          <div
-            style={{
-              marginTop: 30,
-              fontSize: title.length > 62 ? 62 : 74,
-              lineHeight: 1.06,
-              color: INK,
-              letterSpacing: "-0.035em",
-              fontWeight: 600,
-              maxWidth: 960,
-              display: "flex",
-            }}
-          >
-            {title}
-          </div>
+          {portrait && (
+            <div
+              style={{
+                display: "flex",
+                width: 268,
+                height: 335,
+                flexShrink: 0,
+                borderRadius: 20,
+                overflow: "hidden",
+                border: `1px solid ${HAIRLINE}`,
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={portrait}
+                alt=""
+                width={268}
+                height={335}
+                style={{ objectFit: "cover", width: 268, height: 335 }}
+              />
+            </div>
+          )}
         </div>
 
         {/* Footer */}

@@ -20,12 +20,12 @@ export function FounderCard({
       >
         <PortraitFrame founder={founder} priority={priority} sizes={sizes} />
 
-        <div className="mt-6 flex items-start justify-between gap-6">
+        <div className="mt-7 flex items-start justify-between gap-6">
           <div>
-            <h3 className="font-display text-2xl tracking-[-0.025em] text-ink">
+            <h3 className="font-display text-[1.75rem] leading-tight tracking-[-0.03em] text-ink">
               {founder.name}
             </h3>
-            <p className="mt-1.5 font-mono text-[0.6875rem] uppercase tracking-[0.16em] text-brand">
+            <p className="mt-2 font-mono text-[0.6875rem] uppercase tracking-[0.16em] text-brand">
               {founder.role}
             </p>
           </div>
@@ -38,9 +38,13 @@ export function FounderCard({
           </span>
         </div>
 
-        <p className="mt-4 max-w-md text-sm leading-relaxed text-ink-2">
+        <p className="mt-4 max-w-md text-[0.9375rem] leading-relaxed text-ink-2">
           {founder.summary}
         </p>
+
+        <span className="mt-5 inline-flex items-center gap-2 font-mono text-[0.6875rem] uppercase tracking-[0.16em] text-ink-3 transition-colors duration-300 group-hover/card:text-brand">
+          Read full profile
+        </span>
       </Link>
     </article>
   );

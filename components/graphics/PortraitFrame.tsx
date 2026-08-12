@@ -13,11 +13,21 @@ export function PortraitFrame({
   founder,
   priority = false,
   className,
+  /** Frame shape. Pass a different ratio (or `h-full w-full`) for thumbnails. */
+  aspectClass = "aspect-[4/5]",
+  /**
+   * Cinematic grading: desaturated at rest, full colour on hover. Right for
+   * cards in a grid; wrong for a person's own profile page, where they should
+   * simply be shown as they are.
+   */
+  graded = true,
   sizes = "(min-width: 1024px) 34rem, 100vw",
 }: {
   founder: Founder;
   priority?: boolean;
   className?: string;
+  aspectClass?: string;
+  graded?: boolean;
   sizes?: string;
 }) {
   const initials = founder.name
@@ -27,7 +37,7 @@ export function PortraitFrame({
 
   return (
     <div
-      className={`portrait-frame group/portrait relative aspect-[4/5] overflow-hidden rounded-2xl border border-hairline bg-surface-1 ${className ?? ""}`}
+      className={`portrait-frame group/portrait relative overflow-hidden rounded-2xl border border-hairline bg-surface-1 ${aspectClass} ${className ?? ""}`}
     >
       {founder.portrait ? (
         <Image
@@ -36,7 +46,7 @@ export function PortraitFrame({
           fill
           sizes={sizes}
           priority={priority}
-          className="portrait-img object-cover"
+          className={`object-cover ${graded ? "portrait-img" : ""}`}
         />
       ) : (
         <div className="absolute inset-0">

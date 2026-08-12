@@ -60,42 +60,44 @@ They live in `lib/site.ts` and can still be overridden or extended via
 `NEXT_PUBLIC_ORG_PROFILES` — that feeds `Organization.sameAs` and does the
 same entity-resolution job for the company name.
 
-### Founder bios
-- **Current state:** each founder has a short, publishable bio built *strictly*
-  from confirmed facts — name, role, company, location, and what they work on.
-  No education, employment history, credentials or achievements are claimed
-  anywhere, because none were supplied.
-- **Where:** `lib/site.ts` → `founders[].bio` (an array of paragraphs).
-- **What to add:** background, prior experience, education, anything you want
-  public. Longer, more specific bios rank better for name searches — this is
-  the cheapest remaining win for "Sehej Sharma" as a query.
+### Founder bios — expanded, still needs your background
+- **Current state:** each founder now has a four-paragraph bio plus four
+  "what they work on" cards. Everything is built *strictly* from confirmed
+  facts — name, role, company, location, and the responsibilities implied by
+  the role. **No education, employment history, credentials, awards or prior
+  companies are claimed anywhere**, because none were supplied.
+- **Where:** `lib/site.ts` → `founders[].bio` (paragraphs) and
+  `founders[].focus` (the cards).
+- **What to add:** background, prior experience, education, talks, publications.
+  This is the cheapest remaining win for "Sehej Sharma" as a query — a common
+  name needs more unique, specific text on the page to outrank namesakes.
+  "Ali Electricwala" is distinctive enough that it should rank on indexing
+  alone.
 
-### Founder portraits — ⚠️ ACTION NEEDED
-The two photos shared in chat arrived as inline images, not files, so they
-could not be committed. Everything downstream of them is ready.
+### Founder portraits — ✅ DONE
+Both photos are pulled from the shared Drive folder and live in the repo:
 
-**To finish it, two steps:**
+- `public/team/sehej-sharma.png`
+- `public/team/ali-electricwala.png`
 
-1. Save the photos into `public/team/` as:
-   - `public/team/sehej-sharma.jpg`
-   - `public/team/ali-electricwala.jpg`
-2. In `lib/site.ts`, set each founder's `portrait` field:
-   ```ts
-   portrait: "/team/sehej-sharma.jpg",      // on the Sehej Sharma entry
-   portrait: "/team/ali-electricwala.jpg",  // on the Ali Electricwala entry
-   ```
+They are wired to `founders[].portrait` in `lib/site.ts`, and flow through to
+`next/image`, the `Person.image` schema and the share cards automatically.
 
-Alt text, `next/image` sizing and the `Person.image` schema all wire up
-automatically from there. The portrait treatment is already built: photos
-render desaturated and cool at rest, then come to full colour with a green
-rim-light on hover.
+**Treatment:** on `/team` the cards are graded — desaturated at rest, full
+colour on hover. On each founder's own profile page the photo is shown in full
+colour at full size, because that page is their identity page.
 
-Ideally portrait orientation around 4:5 and at least 1200px on the short edge —
-but any reasonable crop works, the frame handles it.
+### Aditya Mishra — ⚠️ NEEDS A DECISION
+The Drive folder also contained `Aditya Mishra Image.png`. It has been saved to
+`public/team/aditya-mishra.png` but **is not on the site anywhere**, because no
+role or bio was supplied for him and inventing a job title for a real person is
+not something to guess at.
 
-**Current state without them:** a branded placeholder — charcoal frame, green
-rim-light, initials, "Portrait pending" label. Never a stock photo of a
-different person standing in for a real founder.
+To add him, send his **role/title** and any bio you want public, and he can be
+added to `founders` in `lib/site.ts` (rename it to `team` if he is not a
+founder). Everything else — the card, the profile page at
+`/team/aditya-mishra`, the Person schema, the share card, the sitemap entry —
+generates from that one entry automatically.
 
 ### Registered address
 - **What:** the full registered office address and postal code.
@@ -183,3 +185,43 @@ npm run audit:rules     # proves the rules still catch what they should
 
 Run it before every deploy. It is the safety net for the one category of
 mistake that would actually cost you credibility.
+
+---
+
+## Winning founder-name searches — what is now in place
+
+Everything code can do for "Sehej Sharma" and "Ali Electricwala" as queries:
+
+- **A dedicated page each** at `/team/<name>`, statically prerendered.
+- **`ProfilePage` schema** wrapping a `Person` — this is the type Google
+  documents for "a page about one person", and it says *this page is the
+  profile for that entity*, not just a page mentioning them.
+- **`Person` schema** with `givenName`, `familyName`, `jobTitle`, `image`,
+  `worksFor`, `knowsAbout`, `homeLocation` and `sameAs` → the real LinkedIn URL.
+  `sameAs` is what ties the search query to this page as the same person.
+- **Title leading with the bare name** — "Sehej Sharma — Founder & CEO".
+- **`<h1>` is the name alone**, once per page.
+- **A substantial, unique body** — four bio paragraphs plus four focus cards.
+  Thin pages do not rank for personal names; this gives Google something real.
+- **A share card carrying their photo**, so links posted to LinkedIn or
+  WhatsApp render as a proper profile card.
+- **Internal links** from the home page, `/about`, `/team`, the footer and each
+  other's profile — all with the person's name as the anchor text.
+- **Sitemap priority 0.9**, above every page except the homepage.
+- **Breadcrumbs** (`Home / Team / Name`) in markup and schema.
+
+### What code cannot do
+Ranking still needs indexing and off-page signals:
+
+1. Verify the domain in Google Search Console and submit `/sitemap.xml`.
+   Nothing ranks before it is indexed — this is the step that matters most.
+2. Each founder's LinkedIn profile should link back to the site, and ideally
+   to their own `/team/<name>` page. Reciprocal links are what confirm the
+   `sameAs` relationship.
+3. Keep the name spelled identically everywhere — site, LinkedIn, Crunchbase,
+   any press. Consistency is what teaches Google the canonical entity.
+
+Realistically: "Ali Electricwala" is distinctive and near-uncontested, so it
+should rank within weeks of indexing. "Sehej Sharma" is a more common name and
+will take longer — more unique text on the page and more inbound links are what
+move it.

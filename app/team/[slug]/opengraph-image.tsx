@@ -1,5 +1,10 @@
-import { OG_CONTENT_TYPE, OG_SIZE, renderOgImage } from "@/lib/og";
-import { founders, getFounder } from "@/lib/site";
+import {
+  OG_CONTENT_TYPE,
+  OG_SIZE,
+  portraitDataUri,
+  renderOgImage,
+} from "@/lib/og";
+import { company, founders, getFounder } from "@/lib/site";
 
 export const alt = "Recharga Chargine leadership";
 export const size = OG_SIZE;
@@ -19,6 +24,7 @@ export default async function Image({
 
   return renderOgImage({
     eyebrow: founder?.role ?? "Leadership",
-    title: founder?.name ?? "Recharga Chargine",
+    title: founder?.name ?? company.shortName,
+    portrait: await portraitDataUri(founder?.portrait ?? null),
   });
 }

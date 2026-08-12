@@ -101,15 +101,23 @@ export const personSchema = (founder: Founder): Json =>
     "@type": "Person",
     "@id": absoluteUrl(`/team/${founder.slug}#person`),
     name: founder.name,
+    givenName: founder.name.split(" ")[0],
+    familyName: founder.name.split(" ").slice(1).join(" ") || undefined,
     jobTitle: founder.role,
     description: founder.summary,
+    // The full bio, so the entity carries real substance rather than a label.
+    disambiguatingDescription: founder.bio[0],
     url: absoluteUrl(`/team/${founder.slug}`),
+    mainEntityOfPage: absoluteUrl(`/team/${founder.slug}`),
     image: founder.portrait ? absoluteUrl(founder.portrait) : undefined,
     worksFor: {
       "@type": "Organization",
       "@id": ORG_ID,
       name: company.legalName,
     },
+    affiliation: { "@id": ORG_ID },
+    knowsAbout: founder.knowsAbout,
+    nationality: { "@type": "Country", name: company.country },
     homeLocation: compact({
       "@type": "Place",
       address: {
@@ -121,6 +129,35 @@ export const personSchema = (founder: Founder): Json =>
     }),
     sameAs: founder.sameAs,
   });
+
+/**
+ * ProfilePage wrapper for a founder page.
+ *
+ * This is the schema type Google documents for "a page about one person", and
+ * it is the single most useful signal for winning a founder's own name as a
+ * query: it tells the crawler this page *is* the profile for that entity,
+ * rather than a page that merely mentions them.
+ */
+export const profilePageSchema = (founder: Founder): Json => ({
+  "@type": "ProfilePage",
+  "@id": absoluteUrl(`/team/${founder.slug}#profilepage`),
+  url: absoluteUrl(`/team/${founder.slug}`),
+  name: `${founder.name} — ${founder.role}, ${company.legalName}`,
+  description: founder.summary,
+  isPartOf: { "@id": SITE_ID },
+  inLanguage: "en",
+  mainEntity: { "@id": absoluteUrl(`/team/${founder.slug}#person`) },
+  about: { "@id": absoluteUrl(`/team/${founder.slug}#person`) },
+  ...(founder.portrait
+    ? {
+        primaryImageOfPage: {
+          "@type": "ImageObject",
+          url: absoluteUrl(founder.portrait),
+          caption: `${founder.name}, ${founder.role} of ${company.legalName}`,
+        },
+      }
+    : {}),
+});
 
 /**
  * Product entry for RADAX. Name and description only — no specifications,
