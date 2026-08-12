@@ -10,12 +10,12 @@ export function SiteFooter() {
       <div className="shell py-16 lg:py-20">
         <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
           <div>
-            <Link href="/" aria-label="Recharga — home" className="inline-flex">
+            <Link href="/" aria-label="Recharga Chargine — home" className="inline-flex">
               <LogoMark className="h-9 w-9 text-brand" />
             </Link>
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-ink-2">
-              A new generator architecture for the wind turbines of the next
-              decade — built to be licensed by the industry.
+              A new generator architecture — built to be licensed by the
+              industry. Wind turbines first.
             </p>
             <p className="eyebrow mt-6">DPIIT-recognised</p>
           </div>
@@ -63,7 +63,6 @@ export function SiteFooter() {
             <address className="mt-5 space-y-2 text-sm not-italic leading-relaxed text-ink-2">
               <span className="block text-ink">{company.legalName}</span>
               <span className="block">{company_address_line}</span>
-              <span className="block text-ink-3">CIN: {company.cin}</span>
               {company.email && (
                 <a
                   href={`mailto:${company.email}`}

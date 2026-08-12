@@ -6,7 +6,7 @@ export const contentType = OG_CONTENT_TYPE;
 
 export default function Image() {
   return renderOgImage({
-    eyebrow: "About Recharga",
+    eyebrow: "About Recharga Chargine",
     title: "Rethinking the machine at the centre of wind power.",
   });
 }

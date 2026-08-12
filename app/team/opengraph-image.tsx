@@ -1,6 +1,6 @@
 import { OG_CONTENT_TYPE, OG_SIZE, renderOgImage } from "@/lib/og";
 
-export const alt = "The founders of Recharga: Sehej Sharma and Ali Electricwala";
+export const alt = "The founders of Recharga Chargine: Sehej Sharma and Ali Electricwala";
 export const size = OG_SIZE;
 export const contentType = OG_CONTENT_TYPE;
 

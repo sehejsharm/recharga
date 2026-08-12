@@ -15,7 +15,7 @@ The whole SEO layer keys off one value.
 
 - **What:** the real production domain.
 - **Where:** `NEXT_PUBLIC_SITE_URL` in Vercel env vars.
-- **Default in code:** `https://recharga.in`.
+- **Default in code:** `https://recharga.vercel.app`.
 - **Why it matters:** every canonical URL, the sitemap, all Open Graph image
   URLs and every JSON-LD `@id` are built from it. If it is wrong, Google is
   told the canonical version of each page lives somewhere that does not exist.
@@ -32,10 +32,11 @@ Written from the brief and from confirmed facts, but not yet founder-approved:
 
 | Where | Current wording |
 | --- | --- |
-| Home H1 | "A new generator architecture for the wind turbines of the next decade." |
-| Home sub-line | "Hybrid axial–radial flux. Direct-drive. Built to be licensed by the industry." |
-| `/technology` | Full problem → solution → architecture → licensing narrative |
-| `/about` | Mission, approach, platform vision (wind → hydro → hybrid-vehicle alternators) |
+| Home H1 | "A new generator architecture for the machines of the next decade." |
+| Home sub-line | "Hybrid axial–radial flux. Direct-drive. Built to be licensed by the industry — wind turbines first." |
+| `/technology` H1 | "A generator architecture, not a product." |
+| `/about` H1 | "The unglamorous part of the energy transition." |
+| `/team` H1 | "Two founders, one very specific problem." |
 | Founder bios | See §2 below |
 
 Everything is in plain text in the page files (`app/*/page.tsx`) and
@@ -45,42 +46,56 @@ Everything is in plain text in the page files (`app/*/page.tsx`) and
 
 ## 2. High value — these decide whether founder-name searches work
 
-### Founder profile URLs (`sameAs`)
-This is the single highest-leverage SEO item on the whole list.
+### Founder profile URLs (`sameAs`) — ✅ DONE
+Both LinkedIn URLs are now wired into `Person.sameAs` and rendered as buttons
+on each founder page:
 
-- **What:** each founder's real LinkedIn URL, plus any other authoritative
-  profile (Crunchbase, an X account, a university or publication page).
-- **Where:** `NEXT_PUBLIC_SEHEJ_PROFILES`, `NEXT_PUBLIC_ALI_PROFILES`,
-  `NEXT_PUBLIC_ORG_PROFILES` — comma-separated absolute URLs.
-- **Why it matters:** `Person.sameAs` is how Google connects
-  "Ali Electricwala" the search query to this site as the same entity. Without
-  it, the founder pages are just pages with a name on them. With it, they are
-  the authoritative record.
-- **Deliberately left empty:** guessed profile URLs actively harm entity
-  resolution, so the schema omits the field rather than inventing one.
+- Sehej Sharma → `linkedin.com/in/sehej-sharma-5b2151234`
+- Ali Electricwala → `linkedin.com/in/ali-electricwala-190821261`
+
+They live in `lib/site.ts` and can still be overridden or extended via
+`NEXT_PUBLIC_SEHEJ_PROFILES` / `NEXT_PUBLIC_ALI_PROFILES` (comma-separated).
+
+**Still worth adding:** a company LinkedIn page URL for
+`NEXT_PUBLIC_ORG_PROFILES` — that feeds `Organization.sameAs` and does the
+same entity-resolution job for the company name.
 
 ### Founder bios
-- **Current state:** each founder has a real, publishable three-paragraph bio
-  built *strictly* from confirmed facts — name, role, company, location, and
-  what they work on. No education, no employment history, no credentials, no
-  achievements are claimed anywhere, because none were supplied.
-- **Where:** `lib/site.ts` → `founders[].bio`.
-- **What to add:** background, prior experience, education, and anything else
-  you want public. Longer, more specific bios rank better for name searches.
-- **Optional:** `founders[].quote` renders a pull-quote on the founder page; it
-  is `null` and hidden until you write one.
+- **Current state:** each founder has a short, publishable bio built *strictly*
+  from confirmed facts — name, role, company, location, and what they work on.
+  No education, employment history, credentials or achievements are claimed
+  anywhere, because none were supplied.
+- **Where:** `lib/site.ts` → `founders[].bio` (an array of paragraphs).
+- **What to add:** background, prior experience, education, anything you want
+  public. Longer, more specific bios rank better for name searches — this is
+  the cheapest remaining win for "Sehej Sharma" as a query.
 
-### Founder portraits
-- **Current state:** a branded placeholder — charcoal frame, green rim-light,
-  initials, and a "Portrait pending" label. It reads as intentional.
-- **Never used:** a stock photo of a different person standing in for a real
-  founder.
-- **What to supply:** two high-resolution portraits, same treatment for both —
-  dark/charcoal background, controlled lighting, subtle green rim-light, same
-  crop and mood. Portrait orientation, 4:5, ideally 1600×2000 or larger.
-- **Where:** drop into `public/team/`, then set `founders[].portrait` in
-  `lib/site.ts` to e.g. `/team/sehej-sharma.jpg`. Alt text and `Person.image`
-  schema wire up automatically.
+### Founder portraits — ⚠️ ACTION NEEDED
+The two photos shared in chat arrived as inline images, not files, so they
+could not be committed. Everything downstream of them is ready.
+
+**To finish it, two steps:**
+
+1. Save the photos into `public/team/` as:
+   - `public/team/sehej-sharma.jpg`
+   - `public/team/ali-electricwala.jpg`
+2. In `lib/site.ts`, set each founder's `portrait` field:
+   ```ts
+   portrait: "/team/sehej-sharma.jpg",      // on the Sehej Sharma entry
+   portrait: "/team/ali-electricwala.jpg",  // on the Ali Electricwala entry
+   ```
+
+Alt text, `next/image` sizing and the `Person.image` schema all wire up
+automatically from there. The portrait treatment is already built: photos
+render desaturated and cool at rest, then come to full colour with a green
+rim-light on hover.
+
+Ideally portrait orientation around 4:5 and at least 1200px on the short edge —
+but any reasonable crop works, the frame handles it.
+
+**Current state without them:** a branded placeholder — charcoal frame, green
+rim-light, initials, "Portrait pending" label. Never a stock photo of a
+different person standing in for a real founder.
 
 ### Registered address
 - **What:** the full registered office address and postal code.
@@ -112,14 +127,18 @@ This is the single highest-leverage SEO item on the whole list.
 
 ## 4. How much technical detail is public?
 
-`/technology` currently describes the architecture at the level the brief
-allows: hybrid axial–radial flux, direct-drive, permanent-magnet, modular,
-3 MW-class, licensed to OEMs. It states design *intent*, never validated
-results, and it says so explicitly on the page.
+`/technology` describes the architecture at the level the brief allows: hybrid
+axial–radial flux, direct-drive, permanent-magnet, modular, licensed to
+manufacturers. It states design *intent*, never validated results, and says so
+explicitly on the page.
 
-It contains **no** performance figures, **no** patent language, **no** ™, and
-**no** named OEMs — enforced mechanically by `npm run audit:content`, which
-fails the check if any of those appear (see below).
+RADAX is framed throughout as **a generator architecture, not a single machine
+rating** — wind is named as the first application rather than the limit of it.
+No specific power class is quoted anywhere.
+
+It contains **no** performance figures, **no** patent language, **no** ™, **no**
+CIN and **no** named OEMs — all enforced mechanically by
+`npm run audit:content` (see below).
 
 If more can be published — approved renders, CAD imagery, a qualitative
 comparison — that section can go considerably deeper. The conceptual diagrams
@@ -153,11 +172,13 @@ old site accumulated is lost.
 - any patent / patent-pending / patent-number language
 - stated efficiency percentages, mass, torque or voltage figures
 - named turbine OEMs
+- the CIN, or any string matching the CIN format
+- the company written as "Recharga" instead of "Recharga Chargine"
 - missing canonical, missing meta description, or anything other than exactly one `<h1>`
 
 ```bash
-npm run audit:content          # against a running server
-node scripts/audit-content.mjs --self-test   # proves the rules still catch what they should
+npm run audit:content   # against a running server
+npm run audit:rules     # proves the rules still catch what they should
 ```
 
 Run it before every deploy. It is the safety net for the one category of

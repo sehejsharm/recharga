@@ -2,7 +2,7 @@ import Image from "next/image";
 import type { Founder } from "@/lib/site";
 
 /**
- * Founder portrait (§10 E).
+ * Founder portrait.
  *
  * Real photography goes in /public/team and is set on the founder record.
  * Until it exists we render a branded placeholder — a charcoal frame with a
@@ -27,7 +27,7 @@ export function PortraitFrame({
 
   return (
     <div
-      className={`group relative aspect-[4/5] overflow-hidden rounded-2xl border border-hairline bg-surface-1 ${className ?? ""}`}
+      className={`portrait-frame group/portrait relative aspect-[4/5] overflow-hidden rounded-2xl border border-hairline bg-surface-1 ${className ?? ""}`}
     >
       {founder.portrait ? (
         <Image
@@ -36,19 +36,13 @@ export function PortraitFrame({
           fill
           sizes={sizes}
           priority={priority}
-          className="object-cover transition-transform duration-[1.2s] group-hover:scale-[1.03]"
-          style={{ transitionTimingFunction: "var(--ease-signature)" }}
+          className="portrait-img object-cover"
         />
       ) : (
         <div className="absolute inset-0">
-          {/* Rim light */}
           <div
             aria-hidden="true"
             className="glow-brand absolute -right-1/4 top-1/4 h-3/4 w-3/4 opacity-40"
-          />
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(255,255,255,0.05),transparent_60%)]"
           />
           <svg
             aria-hidden="true"
@@ -91,9 +85,19 @@ export function PortraitFrame({
         </div>
       )}
 
+      {/* Green rim-light and floor shadow, tying photography to the brand. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-abyss/70 via-transparent to-transparent"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-abyss via-transparent to-transparent opacity-80"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-[linear-gradient(to_left,rgba(0,255,94,0.16),transparent)] opacity-0 transition-opacity duration-700 group-hover/portrait:opacity-100"
+        style={{ transitionTimingFunction: "var(--ease-signature)" }}
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/[0.04]"
       />
     </div>
   );

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { MagneticDots } from "@/components/graphics/MagneticDots";
 import { Reveal } from "@/components/motion/Reveal";
 import { CtaBand } from "@/components/shared/CtaBand";
 import { FounderCard } from "@/components/shared/FounderCard";
@@ -13,22 +14,21 @@ import {
 import { jsonLd, pageMetadata } from "@/lib/seo";
 import { founders } from "@/lib/site";
 
-const TITLE = "Team — Sehej Sharma and Ali Electricwala | Recharga founders";
+const TITLE = "Team — Sehej Sharma and Ali Electricwala, founders";
 const DESCRIPTION =
-  "Meet the founders of Recharga Chargine Pvt. Ltd.: Sehej Sharma, Founder & CEO, and Ali Electricwala, Co-Founder & COO, building the RADAX generator architecture in Jaipur, India.";
+  "The founders of Recharga Chargine Pvt. Ltd.: Sehej Sharma, Founder & CEO, and Ali Electricwala, Co-Founder & COO, building the RADAX generator architecture in Jaipur, India.";
 
 export const metadata: Metadata = pageMetadata({
   title: TITLE,
   description: DESCRIPTION,
   path: "/team",
   keywords: [
-    "Recharga team",
-    "Recharga founders",
+    "Recharga Chargine team",
+    "Recharga Chargine founders",
     "Sehej Sharma",
-    "Sehej Sharma Recharga",
+    "Sehej Sharma Recharga Chargine",
     "Ali Electricwala",
-    "Ali Electricwala Recharga",
-    "Recharga leadership",
+    "Ali Electricwala Recharga Chargine",
   ],
 });
 
@@ -65,12 +65,16 @@ export default function TeamPage() {
             <span className="text-gradient-brand">very specific</span> problem.
           </>
         }
-        lede="Recharga was founded to rethink the generator at the heart of a wind turbine. That is a narrow brief, deliberately — and it is what the whole company is pointed at."
+        lede="Rethink the generator at the heart of a machine. Narrow brief, deliberately — and it's what the whole company points at."
         trail={trail}
       />
 
-      <section aria-label="Founders" className="section">
-        <div className="shell">
+      <section aria-label="Founders" className="relative section">
+        <MagneticDots
+          className="pointer-events-none absolute inset-0 h-full w-full opacity-40"
+          spacing={44}
+        />
+        <div className="shell relative">
           <div className="grid gap-16 lg:grid-cols-2 lg:gap-20">
             {founders.map((founder, i) => (
               <Reveal key={founder.slug} delay={i * 0.1} y={30}>
@@ -84,17 +88,17 @@ export default function TeamPage() {
           </div>
 
           <Reveal delay={0.1}>
-            <div className="mt-20 max-w-3xl border-t border-hairline pt-10">
-              <h2 className="display-3 text-ink">Working with us</h2>
-              <p className="mt-4 max-w-2xl text-[0.9375rem] leading-relaxed text-ink-2">
-                We work directly with the engineering teams evaluating RADAX
-                rather than through layers of business development. If you are
-                assessing generator technology for a turbine platform, the
-                fastest route is a conversation with the people who designed it.
-              </p>
+            <div className="mt-20 flex flex-wrap items-end justify-between gap-8 border-t border-hairline pt-10">
+              <div>
+                <h2 className="display-3 text-ink">Working with us</h2>
+                <p className="mt-3 max-w-xl text-[0.9375rem] leading-relaxed text-ink-2">
+                  We work directly with the engineering teams evaluating RADAX —
+                  not through layers of business development.
+                </p>
+              </div>
               <Link
                 href="/contact"
-                className="link-draw mt-7 inline-flex font-display text-lg text-ink"
+                className="link-draw font-display text-lg text-ink"
               >
                 Get in touch
               </Link>

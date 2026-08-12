@@ -26,9 +26,8 @@ export function TechTeaser() {
             <Reveal delay={0.1}>
               <p className="lede mt-7 max-w-xl">
                 Conventional generators pick a side: flux crosses the air gap
-                either radially or axially. RADAX is built to use both — a
-                hybrid topology aimed at getting more torque out of the same
-                envelope, in a direct-drive form with no gearbox in the way.
+                either radially or axially. RADAX uses both — aimed at more
+                torque from the same envelope, with no gearbox in the way.
               </p>
             </Reveal>
 
@@ -37,8 +36,8 @@ export function TechTeaser() {
                 {[
                   "Hybrid axial–radial flux topology",
                   "Direct-drive, permanent-magnet excitation",
-                  "Modular structure intended to scale across a range",
-                  "Engineered for multi-megawatt, 3 MW-class turbines",
+                  "Modular — scales across ratings",
+                  "Licensed, not sold as a finished product",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3.5 text-[0.9375rem] text-ink-2">
                     <span

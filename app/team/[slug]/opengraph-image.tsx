@@ -1,7 +1,7 @@
 import { OG_CONTENT_TYPE, OG_SIZE, renderOgImage } from "@/lib/og";
 import { founders, getFounder } from "@/lib/site";
 
-export const alt = "Recharga leadership";
+export const alt = "Recharga Chargine leadership";
 export const size = OG_SIZE;
 export const contentType = OG_CONTENT_TYPE;
 
@@ -19,6 +19,6 @@ export default async function Image({
 
   return renderOgImage({
     eyebrow: founder?.role ?? "Leadership",
-    title: founder?.name ?? "Recharga",
+    title: founder?.name ?? "Recharga Chargine",
   });
 }

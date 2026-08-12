@@ -78,9 +78,12 @@ export function renderOgImage({
               color: INK,
               letterSpacing: "-0.02em",
               fontWeight: 600,
+              display: "flex",
+              gap: 9,
             }}
           >
-            Recharga
+            <span>Recharga</span>
+            <span style={{ color: INK_3 }}>Chargine</span>
           </span>
         </div>
 

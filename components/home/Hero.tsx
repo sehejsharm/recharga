@@ -28,16 +28,16 @@ export function Hero() {
       <div className="shell relative w-full py-20">
         <div className="max-w-[52rem]">
           <p className="eyebrow rise-in" style={{ animationDelay: "40ms" }}>
-            Recharga · Jaipur, India
+            Recharga Chargine · Jaipur, India
           </p>
 
           <h1
             className="display-1 rise-in mt-7 text-ink"
             style={{ animationDelay: "120ms" }}
           >
-            A new generator architecture for the{" "}
-            <span className="text-gradient-brand">wind turbines</span> of the
-            next decade.
+            A new{" "}
+            <span className="text-gradient-brand">generator architecture</span>{" "}
+            for the machines of the next decade.
           </h1>
 
           <p
@@ -45,7 +45,7 @@ export function Hero() {
             style={{ animationDelay: "240ms" }}
           >
             Hybrid axial–radial flux. Direct-drive. Built to be licensed by the
-            industry.
+            industry — wind turbines first.
           </p>
 
           <div
@@ -68,7 +68,7 @@ export function Hero() {
             {[
               { term: "Architecture", detail: "Hybrid axial–radial flux" },
               { term: "Drivetrain", detail: "Direct-drive, permanent magnet" },
-              { term: "Model", detail: "Licensed to turbine OEMs" },
+              { term: "Model", detail: "Licensed to manufacturers" },
             ].map((item) => (
               <div key={item.term}>
                 <dt className="font-mono text-[0.6875rem] uppercase tracking-[0.16em] text-ink-3">

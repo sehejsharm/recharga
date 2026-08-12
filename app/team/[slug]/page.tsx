@@ -32,12 +32,12 @@ export async function generateMetadata({
   if (!founder) return {};
 
   return pageMetadata({
-    title: `${founder.name} — ${founder.role}, Recharga`,
-    description: `${founder.name} is ${founder.role} of Recharga Chargine Pvt. Ltd., the DPIIT-recognised deep-tech company in Jaipur, India developing the RADAX generator architecture for wind turbines.`,
+    title: `${founder.name} — ${founder.role}, Recharga Chargine`,
+    description: `${founder.name} is ${founder.role} of Recharga Chargine Pvt. Ltd., the DPIIT-recognised deep-tech company in Jaipur, India developing the RADAX generator architecture.`,
     path: `/team/${founder.slug}`,
     keywords: [
       founder.name,
-      `${founder.name} Recharga`,
+      `${founder.name} Recharga Chargine`,
       `${founder.name} ${founder.role}`,
       "Recharga Chargine",
       "RADAX Generator",
@@ -166,19 +166,6 @@ export default async function FounderPage({
                   </Reveal>
                 ))}
 
-                {founder.quote && (
-                  <Reveal delay={0.2}>
-                    <blockquote className="mt-12 border-l border-brand/50 pl-7">
-                      <p className="font-display text-xl leading-snug tracking-[-0.02em] !text-ink">
-                        &ldquo;{founder.quote}&rdquo;
-                      </p>
-                      <cite className="mt-4 block font-mono text-[0.6875rem] uppercase not-italic tracking-[0.16em] text-ink-3">
-                        {founder.name}, {founder.role}
-                      </cite>
-                    </blockquote>
-                  </Reveal>
-                )}
-
                 <Reveal delay={0.24}>
                   <div className="mt-12 flex flex-wrap gap-x-8 gap-y-4 border-t border-hairline pt-8 text-[0.9375rem]">
                     <Link href="/technology" className="link-draw text-ink">
@@ -186,7 +173,7 @@ export default async function FounderPage({
                       <IconArrowRight className="h-4 w-4" />
                     </Link>
                     <Link href="/about" className="link-draw text-ink">
-                      About Recharga
+                      About Recharga Chargine
                       <IconArrowRight className="h-4 w-4" />
                     </Link>
                   </div>
@@ -208,7 +195,7 @@ export default async function FounderPage({
               >
                 <div>
                   <p className="font-mono text-[0.6875rem] uppercase tracking-[0.16em] text-ink-3">
-                    Also at Recharga
+                    Also at Recharga Chargine
                   </p>
                   <p className="display-3 mt-3 text-ink">{other.name}</p>
                   <p className="mt-1.5 text-sm text-ink-2">{other.role}</p>

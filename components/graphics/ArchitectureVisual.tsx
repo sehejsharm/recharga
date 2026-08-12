@@ -233,15 +233,17 @@ export function ArchitectureVisual({ className }: { className?: string }) {
 
       {/* Callouts */}
       <g className="fill-ink-3 font-mono" fontSize={10} letterSpacing="0.14em">
+        {/* Leader stops short of the label so "RADIAL PATH" fits inside the
+            viewBox at every width. */}
         <line
           x1={CX + RX - 40}
           y1={CY - RY + 14}
-          x2={CX + RX + 34}
-          y2={CY - RY - 26}
+          x2={CX + RX - 8}
+          y2={CY - RY - 24}
           stroke="#2E2E34"
           strokeWidth={1}
         />
-        <text x={CX + RX + 40} y={CY - RY - 28}>
+        <text x={CX + RX - 2} y={CY - RY - 28}>
           RADIAL PATH
         </text>
 

@@ -134,7 +134,7 @@ export async function submitContact(
       from,
       to: [to],
       replyTo: email,
-      subject: `Recharga enquiry — ${safeLine(name)}${
+      subject: `Recharga Chargine enquiry — ${safeLine(name)}${
         organisation ? ` (${safeLine(organisation)})` : ""
       } · ${interestLabel}`,
       // Plain text only: nothing the sender typed is ever rendered as HTML.

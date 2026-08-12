@@ -1,5 +1,5 @@
 /**
- * The Recharga mark: plug head, two prongs, and a bolt cutting through.
+ * The Recharga Chargine mark: plug head, two prongs, and a bolt cutting through.
  *
  * Vector traced from the supplied brand artwork. Swap in the official source
  * SVG when it is available (see CONTENT-TODO.md) — geometry lives only here
@@ -42,8 +42,9 @@ export function Logo({
   return (
     <span className={`inline-flex items-center gap-2.5 ${className ?? ""}`}>
       <LogoMark className={`h-7 w-7 shrink-0 ${markClassName}`} />
-      <span className="font-display text-[1.0625rem] font-medium tracking-[-0.02em] text-ink">
-        Recharga
+      <span className="font-display text-[1.0625rem] font-medium leading-none tracking-[-0.02em] text-ink">
+        Recharga{" "}
+        <span className="text-ink-2">Chargine</span>
       </span>
     </span>
   );

@@ -191,7 +191,9 @@
     color: var(--color-ink-2);
   }
 
-  .prose-body p + p {
+  /* Targets children, not just adjacent <p>: paragraphs are usually each
+     wrapped in a reveal element, so a `p + p` rule would never match. */
+  .prose-body > * + * {
     margin-top: 1.25rem;
   }
 
@@ -560,6 +562,23 @@
   }
 }
 
+/* A charge travelling the licensing path. */
+@keyframes recharga-charge {
+  from {
+    stroke-dashoffset: 460;
+  }
+  to {
+    stroke-dashoffset: -460;
+  }
+}
+
+/* Slow rotation for the active platform orbit. */
+@keyframes recharga-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .flux-arrow {
     animation: recharga-flux 2.8s var(--ease-signature) infinite;
@@ -568,6 +587,24 @@
   .radax-sweep {
     animation: recharga-sweep 9s linear infinite;
   }
+
+  .flow-charge {
+    animation: recharga-charge 4.5s linear infinite;
+  }
+
+  .orbit-spin {
+    animation: recharga-orbit 34s linear infinite;
+  }
+
+  /* Bars in the scaling chart grow out of the baseline once revealed. */
+  .motion-ok [data-reveal] .scale-bar {
+    transform: scaleY(0);
+    transition: transform 1s var(--ease-signature);
+  }
+
+  .motion-ok [data-reveal][data-visible="true"] .scale-bar {
+    transform: scaleY(1);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -575,7 +612,35 @@
   .anim-pulse,
   .anim-drift,
   .flux-arrow,
-  .radax-sweep {
+  .radax-sweep,
+  .flow-charge,
+  .orbit-spin {
     animation: none !important;
+  }
+}
+
+/* Cinematic founder portraits: desaturated and cool at rest, full colour and
+   lifted on hover. Never hides the subject — only grades them. */
+.portrait-img {
+  filter: grayscale(0.55) contrast(1.06) brightness(0.92);
+  transition:
+    filter 0.9s var(--ease-signature),
+    transform 1.2s var(--ease-signature);
+}
+
+.group\/card:hover .portrait-img,
+.group\/card:focus-within .portrait-img,
+.portrait-frame:hover .portrait-img {
+  filter: grayscale(0) contrast(1) brightness(1);
+  transform: scale(1.035);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portrait-img {
+    transition: none;
+  }
+  .group\/card:hover .portrait-img,
+  .portrait-frame:hover .portrait-img {
+    transform: none;
   }
 }

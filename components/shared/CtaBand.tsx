@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { IconArrowRight } from "@/components/graphics/Icons";
+import { MagneticDots } from "@/components/graphics/MagneticDots";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { Reveal } from "@/components/motion/Reveal";
 
@@ -19,9 +20,10 @@ export function CtaBand({
         aria-hidden="true"
         className="glow-brand pointer-events-none absolute left-1/2 top-full h-[30rem] w-[46rem] -translate-x-1/2 -translate-y-1/2 opacity-70"
       />
-      <div
-        aria-hidden="true"
-        className="grid-motif pointer-events-none absolute inset-0 opacity-30"
+      <MagneticDots
+        className="pointer-events-none absolute inset-0 h-full w-full opacity-70"
+        spacing={36}
+        radius={170}
       />
 
       <div className="shell section relative text-center">

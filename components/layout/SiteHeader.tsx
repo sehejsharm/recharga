@@ -39,7 +39,7 @@ export function SiteHeader() {
       <div className="shell flex h-[var(--header-h)] items-center justify-between">
         <Link
           href="/"
-          aria-label="Recharga — home"
+          aria-label="Recharga Chargine — home"
           className="rounded-sm transition-opacity duration-300 hover:opacity-80"
         >
           <Logo />

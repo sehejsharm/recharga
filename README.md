@@ -3,7 +3,7 @@
 Marketing site for **Recharga Chargine Pvt. Ltd.** — a DPIIT-recognised
 deep-tech clean-energy company in Jaipur, India, developing the **RADAX
 Generator**, a hybrid axial–radial flux, direct-drive generator architecture
-licensed to wind turbine manufacturers.
+licensed to manufacturers. Wind turbines first.
 
 > **Before launch, read [`CONTENT-TODO.md`](./CONTENT-TODO.md).** It lists
 > everything only the founders can supply — the production domain, founder
@@ -94,8 +94,10 @@ and sits on top of a server-rendered gradient poster that paints instantly.
 
 `scripts/audit-content.mjs` fetches every route and fails on the ™ symbol,
 any patent language, stated efficiency/mass/torque/voltage figures, named
-turbine OEMs, missing canonicals or descriptions, and any page without exactly
-one `<h1>`. It checks rendered prose, meta tags and JSON-LD.
+turbine OEMs, the CIN (or anything matching its format), the company written as
+"Recharga" instead of "Recharga Chargine", missing canonicals or descriptions,
+and any page without exactly one `<h1>`. It checks rendered prose, meta tags
+and JSON-LD.
 
 `npm run audit:rules` verifies the rules themselves against fixtures — a
 silent audit that matches nothing would be worse than no audit.
@@ -120,7 +122,14 @@ app/
   opengraph-image.tsx     per-route 1200×630 share cards (next/og)
   sitemap.ts robots.ts manifest.ts
 components/
-  graphics/               logo, hero canvas, conceptual diagrams, icons
+  graphics/               logo, hero canvas, interactive diagrams, icons
+    HeroField             2D canvas flux field, pointer + scroll reactive
+    MagneticDots          cursor-reactive dot grid used across sections
+    FluxExplorer          tabbed diagram morphing radial → axial → hybrid
+    PlatformOrbit         interactive orbit: wind / hydro / alternators
+    ScaleWall             conceptual "mass climbs with rating" chart
+    LicensingFlow         animated three-step circuit
+    ArchitectureVisual    conceptual RADAX flux-path render
   home/                   hero, pinned problem→solution, teasers
   motion/                 Lenis+GSAP wiring, reveals, transitions, magnetic
   layout/ shared/ contact/
@@ -155,10 +164,13 @@ clears it while still reading as muted.
 The code-side work is done. The remaining items are account-level and cannot
 be done from the repository:
 
-1. Set `NEXT_PUBLIC_SITE_URL` to the real domain.
+1. Set `NEXT_PUBLIC_SITE_URL` to the real domain (defaults to
+   `https://recharga.vercel.app`).
 2. Verify the domain in Google Search Console and Bing Webmaster Tools, and
    submit `/sitemap.xml`.
-3. Add the founder `sameAs` profile URLs.
+3. Add the founder portraits (see `CONTENT-TODO.md` §2) and a company
+   LinkedIn URL for `NEXT_PUBLIC_ORG_PROFILES`. Both founder LinkedIn
+   profiles are already wired in.
 4. Configure Resend and confirm a test enquiry arrives.
 5. Add 301 redirects from the old site's URLs if paths changed.
 6. Claim the Google Business Profile and keep the company name spelled

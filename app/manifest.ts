@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: company.legalName,
     short_name: company.shortName,
     description:
-      "Recharga develops the RADAX Generator, a hybrid axial-radial flux, direct-drive architecture for wind turbines, licensed to OEMs.",
+      "Recharga Chargine develops the RADAX Generator, a hybrid axial-radial flux, direct-drive architecture licensed to manufacturers.",
     start_url: "/",
     display: "standalone",
     background_color: "#0E0E10",

@@ -8,9 +8,10 @@ import { CtaBand } from "@/components/shared/CtaBand";
 import { graph, localBusinessSchema, webPageSchema } from "@/lib/schema";
 import { jsonLd, pageMetadata } from "@/lib/seo";
 
-const TITLE = "Recharga — RADAX hybrid flux wind generator architecture";
+const TITLE =
+  "Recharga Chargine — RADAX hybrid flux generator architecture";
 const DESCRIPTION =
-  "Recharga develops the RADAX Generator: a hybrid axial-radial flux, direct-drive architecture for multi-megawatt wind turbines, licensed to OEMs. DPIIT-recognised, Jaipur, India.";
+  "Recharga Chargine develops the RADAX Generator: a hybrid axial-radial flux, direct-drive architecture licensed to manufacturers. DPIIT-recognised, Jaipur, India.";
 
 export const metadata: Metadata = {
   ...pageMetadata({
@@ -18,20 +19,20 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     path: "/",
     keywords: [
-      "Recharga",
       "Recharga Chargine",
+      "Recharga Chargine Pvt Ltd",
       "RADAX",
       "RADAX Generator",
       "axial radial flux generator",
-      "direct drive wind generator",
+      "direct drive generator",
       "hybrid flux generator",
       "wind turbine generator technology",
-      "wind energy IP licensing",
+      "generator technology licensing",
       "deep tech clean energy startup India",
     ],
   }),
   // The homepage carries the site's default title verbatim, without the
-  // "| Recharga" suffix the template would otherwise append.
+  // "| Recharga Chargine" suffix the template would otherwise append.
   title: { absolute: TITLE },
 };
 

@@ -72,6 +72,19 @@ const RULES = [
     why: "No named turbine OEM presented as a customer or partner.",
     test: new RegExp(`\\b(${OEM_NAMES.join("|")})\\b`, "i"),
   },
+  {
+    id: "registration-number",
+    why: "No CIN or other company registration number anywhere on the site.",
+    // The literal token, and the CIN format itself (U29304RJ2023PTC086778).
+    test: /\bCIN\b|\b[UL]\d{5}[A-Z]{2}\d{4}[A-Z]{3}\d{6}\b/i,
+  },
+  {
+    id: "brand-shortened",
+    why: 'The company is "Recharga Chargine", never "Recharga" on its own.',
+    // "Recharga" not followed by "Chargine", and not part of a URL or the
+    // product sentence "the RADAX Generator".
+    test: /\bRecharga(?!\s+Chargine)(?![-\w.])/,
+  },
 ];
 
 /**
@@ -93,12 +106,17 @@ const SELF_TEST_CASES = {
     ["back-EMF of 480 volts", "voltage-claim"],
     ["our partner Vestas", "named-oem"],
     ["in production with Siemens Gamesa", "named-oem"],
+    ["CIN: U29304RJ2023PTC086778", "registration-number"],
+    ["registered as U29304RJ2023PTC086778", "registration-number"],
+    ["Recharga is a deep-tech company", "brand-shortened"],
+    ["founded Recharga in 2023", "brand-shortened"],
   ],
   allowed: [
-    "engineered for multi-megawatt (3 MW-class) wind turbines",
+    "engineered for multi-megawatt wind turbines",
     "hybrid axial-radial flux, direct-drive, permanent-magnet",
     "DPIIT-recognised startup under Startup India",
-    "Recharga Chargine Pvt. Ltd., CIN U29304RJ2023PTC086778",
+    "Recharga Chargine Pvt. Ltd. is based in Jaipur",
+    "Recharga Chargine develops the RADAX Generator",
     "designed for higher power density",
     "targeting a better balance of weight, efficiency and cost",
     "Jaipur, Rajasthan, India",

@@ -23,9 +23,9 @@ const PROOF = [
     detail: "Wind generation technology",
   },
   {
-    label: "Registered",
-    value: company.legalName,
-    detail: `CIN ${company.cin}`,
+    label: "Model",
+    value: "Technology licensing",
+    detail: "Adopted by manufacturers, not sold as a product",
   },
 ];
 

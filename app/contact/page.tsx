@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { IconLicense, IconMail, IconWind } from "@/components/graphics/Icons";
+import { MagneticDots } from "@/components/graphics/MagneticDots";
 import { Reveal } from "@/components/motion/Reveal";
 import { PageHeader } from "@/components/shared/PageHeader";
 import {
@@ -12,7 +13,7 @@ import {
 import { jsonLd, pageMetadata } from "@/lib/seo";
 import { company, company_address_line } from "@/lib/site";
 
-const TITLE = "Contact Recharga — OEM, investor and press enquiries";
+const TITLE = "Contact Recharga Chargine — OEM and investor enquiries";
 const DESCRIPTION =
   "Get in touch with Recharga Chargine Pvt. Ltd. in Jaipur, India about licensing the RADAX generator architecture, investment, or press enquiries.";
 
@@ -21,7 +22,7 @@ export const metadata: Metadata = pageMetadata({
   description: DESCRIPTION,
   path: "/contact",
   keywords: [
-    "contact Recharga",
+    "contact Recharga Chargine",
     "Recharga Chargine contact",
     "RADAX Generator licensing",
     "wind turbine generator licensing enquiry",
@@ -83,8 +84,12 @@ export default function ContactPage() {
         trail={trail}
       />
 
-      <section aria-labelledby="form-heading" className="section">
-        <div className="shell">
+      <section aria-labelledby="form-heading" className="relative section">
+        <MagneticDots
+          className="pointer-events-none absolute inset-0 h-full w-full opacity-45"
+          spacing={40}
+        />
+        <div className="shell relative">
           <div className="grid gap-14 lg:grid-cols-[1fr_0.72fr] lg:gap-20">
             <div>
               <h2 id="form-heading" className="sr-only">
@@ -134,7 +139,6 @@ export default function ContactPage() {
                       {company.legalName}
                     </span>
                     <span className="block">{company_address_line}</span>
-                    <span className="block text-ink-3">CIN: {company.cin}</span>
                     {company.email && (
                       <a
                         href={`mailto:${company.email}`}
