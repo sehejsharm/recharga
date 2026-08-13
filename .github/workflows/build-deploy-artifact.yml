@@ -51,37 +51,31 @@ jobs:
         run: |
           set -euo pipefail
           fail() { echo "::error::$1"; exit 1; }
-
-          [ -f out/index.html ]              || fail "index.html missing"
-          [ -f out/.htaccess ]               || fail ".htaccess missing — every page would 404 on Apache"
-          [ -f out/api/contact.php ]         || fail "contact.php missing — the form could not send"
-          [ -f out/404.html ]                || fail "404.html missing"
-          [ -f out/sitemap.xml ]             || fail "sitemap.xml missing"
-          [ -f out/robots.txt ]              || fail "robots.txt missing"
-          [ -f out/team/sehej-sharma.html ]  || fail "founder page missing"
+          [ -f out/index.html ] || fail "index.html missing"
+          [ -f out/.htaccess ] || fail ".htaccess missing — every page would 404 on Apache"
+          [ -f out/api/contact.php ] || fail "contact.php missing — the form could not send"
+          [ -f out/404.html ] || fail "404.html missing"
+          [ -f out/sitemap.xml ] || fail "sitemap.xml missing"
+          [ -f out/robots.txt ] || fail "robots.txt missing"
+          [ -f out/team/sehej-sharma.html ] || fail "founder page missing"
           [ -f out/team/ali-electricwala.html ] || fail "founder page missing"
-
           # The site must never ship with a placeholder origin.
           if grep -rqs "recharga.vercel.app" out/sitemap.xml; then
             fail "sitemap still points at the old origin"
           fi
-
           echo "Build verified. $(find out -type f | wc -l) files, $(du -sh out | cut -f1)."
 
       - name: Publish to the deploy branch
         run: |
           set -euo pipefail
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           # Orphan branch containing only the built site, at the root.
           rm -rf .deploy && mkdir .deploy
           cp -a out/. .deploy/
           cd .deploy
-
           # Nothing here should be interpreted as a repo of its own.
           rm -f .gitignore
-
           git init -q
           git checkout -q -b deploy
           git add -A
@@ -89,7 +83,6 @@ jobs:
           git push -q --force \
             "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" \
             deploy
-
           echo "Pushed to the deploy branch."
 
       - name: Upload as a workflow artifact too
