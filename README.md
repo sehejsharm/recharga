@@ -21,36 +21,63 @@ licensed to manufacturers. Wind turbines first.
 | Scroll storytelling | GSAP + ScrollTrigger (pinned Problem → Solution scene) |
 | Scroll reveals | CSS transitions driven by one IntersectionObserver |
 | Route transitions | Framer Motion |
-| Email | Resend, via a Server Action |
-| Deploy | Vercel |
+| Email | PHP endpoint (`public/api/contact.php`) |
+| Deploy | Static export to Hostinger — see [`DEPLOY.md`](./DEPLOY.md) |
 
 Every page is prerendered to static HTML at build time. There is no
 client-only rendering anywhere — that was the root cause of the previous site
 being invisible to search.
 
+### "Static" is about the hosting, not the site
+
+`npm run build` writes a folder (`out/`) of plain files that any web host can
+serve. All the interactivity still runs in the browser exactly as before: the
+hero flux canvas, the cursor-reactive dot fields, the morphing flux diagram,
+the GSAP-pinned scroll scene, Lenis smooth scroll and the Framer Motion route
+transitions. Only two *server* capabilities were traded away, and both have
+replacements:
+
+| Was | Now |
+| --- | --- |
+| Contact form via Server Action | `public/api/contact.php`, which Hostinger runs natively |
+| On-demand image optimisation | Build-time compression (`npm run images`) — portraits went 1.4 MB → 62 KB |
+
 ## Commands
 
 ```bash
 npm run dev              # development server
-npm run build            # production build (also type-checks)
-npm start                # serve the production build
+npm run build            # optimise images, type-check, export to out/
+npm run preview          # serve out/ exactly as a static host would
+npm run images           # re-compress portraits from assets/portraits
 npm run lint             # ESLint
 npm run audit:content    # content-rule + SEO audit against a running server
 npm run audit:rules      # prove the audit rules still catch what they should
 ```
 
+Deployment is `out/` uploaded to `public_html`. Full walkthrough in
+[`DEPLOY.md`](./DEPLOY.md); a ready-to-paste prompt for driving it from a
+browser is in [`HOSTING-PROMPT.md`](./HOSTING-PROMPT.md).
+
 ## Environment
 
-Copy `.env.example` to `.env.local`. Nothing is required to run locally — the
-site builds and renders with every value blank, and the contact form logs
-submissions to the console instead of emailing.
+Copy `.env.example` to `.env.local`. Nothing is required to run locally.
 
-`NEXT_PUBLIC_SITE_URL` is the one value that genuinely matters in production:
-canonicals, the sitemap, OG image URLs and JSON-LD `@id`s are all derived from
-it.
+`NEXT_PUBLIC_SITE_URL` is the one value that matters at build time — canonicals,
+the sitemap, OG image URLs and JSON-LD `@id`s all derive from it. It defaults
+to `https://rechargachargine.com`.
 
-Secrets (`RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`) are read
-only inside the Server Action and never reach the browser bundle.
+There are no runtime secrets. Mail delivery is configured in
+`public/api/contact.php` (`MAIL_TO` / `MAIL_FROM`), which never reaches the
+browser.
+
+## Contact form
+
+`/contact` posts JSON to `/api/contact.php`, which delivers to
+**admin@rechargachargine.com**. The endpoint re-validates every field
+server-side, strips CR/LF before anything touches a mail header, quotes display
+names per RFC 5322, drops honeypot submissions while returning the success
+shape, rate-limits to 5 messages per IP per 10 minutes, and refuses
+cross-origin posts. It never reports success for a message it did not send.
 
 ---
 

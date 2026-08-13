@@ -33,23 +33,30 @@ function Mark({ size = 46 }: { size?: number }) {
 }
 
 /**
- * Reads a portrait from /public at build time and returns it as a data URI.
+ * Reads a portrait from /public at build time and returns it as a PNG data URI.
  *
- * Satori cannot fetch relative URLs, so the bytes have to be inlined. Failure
- * is non-fatal: the card falls back to the plain layout rather than breaking
- * the build over a share image.
+ * Two reasons this is not just a file read: Satori cannot fetch relative URLs,
+ * so the bytes must be inlined; and it decodes PNG/JPEG reliably but not WebP,
+ * which is the format the site itself serves. Sharp transcodes to PNG at
+ * exactly the size the card draws, so the inlined payload stays small.
+ *
+ * Failure is deliberately non-fatal — a share image is not worth breaking a
+ * build over, so the card falls back to its plain layout.
  */
 export async function portraitDataUri(
   publicPath: string | null,
 ): Promise<string | null> {
   if (!publicPath) return null;
   try {
-    const { readFile } = await import("node:fs/promises");
     const { join } = await import("node:path");
-    const bytes = await readFile(join(process.cwd(), "public", publicPath));
-    const ext = publicPath.split(".").pop()?.toLowerCase();
-    const mime = ext === "png" ? "image/png" : "image/jpeg";
-    return `data:${mime};base64,${bytes.toString("base64")}`;
+    const sharp = (await import("sharp")).default;
+
+    const png = await sharp(join(process.cwd(), "public", publicPath))
+      .resize({ width: 536, height: 670, fit: "cover", position: "top" })
+      .png({ compressionLevel: 9 })
+      .toBuffer();
+
+    return `data:image/png;base64,${png.toString("base64")}`;
   } catch {
     return null;
   }

@@ -1,6 +1,9 @@
 import type { MetadataRoute } from "next";
 import { company } from "@/lib/site";
 
+// Static export: these metadata routes are generated once at build time.
+export const dynamic = "force-static";
+
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: company.legalName,

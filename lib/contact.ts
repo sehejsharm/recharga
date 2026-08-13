@@ -1,10 +1,16 @@
 /**
  * Shared contact-form contract.
  *
- * Kept out of the "use server" module because every export from a Server
- * Actions file must itself be an async server function — constants and types
- * belong here so both the action and the client form can import them.
+ * The site is a static export, so there is no Node runtime to host a Server
+ * Action. The form posts to a PHP endpoint instead, which Hostinger runs
+ * natively — see public/api/contact.php for the server half.
  */
+
+/**
+ * Endpoint the form posts to. Root-relative so it works on the production
+ * domain, on a staging subdomain, and in a local preview without changes.
+ */
+export const CONTACT_ENDPOINT = "/api/contact.php";
 
 export const INTERESTS = [
   { value: "oem", label: "OEM / manufacturer" },

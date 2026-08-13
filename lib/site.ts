@@ -14,7 +14,7 @@
 
 /** Absolute origin used for canonicals, sitemap, OG images and JSON-LD. */
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://recharga.vercel.app"
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://rechargachargine.com"
 ).replace(/\/+$/, "");
 
 export const absoluteUrl = (path = "/") =>
@@ -55,8 +55,12 @@ export const company = {
   streetAddress: env(process.env.NEXT_PUBLIC_STREET_ADDRESS),
   postalCode: env(process.env.NEXT_PUBLIC_POSTAL_CODE),
 
-  /** Public contact address. Null until confirmed — the UI falls back to the form. */
-  email: env(process.env.NEXT_PUBLIC_CONTACT_EMAIL),
+  /**
+   * Public contact address. Every enquiry from the site — the contact form
+   * included — is delivered here. Kept in sync with MAIL_TO in
+   * public/api/contact.php.
+   */
+  email: env(process.env.NEXT_PUBLIC_CONTACT_EMAIL) ?? "admin@rechargachargine.com",
 
   /** Official company profiles for Organization.sameAs. */
   profiles: profileList(process.env.NEXT_PUBLIC_ORG_PROFILES),
@@ -109,7 +113,7 @@ export const founders: Founder[] = [
       "He leads Recharga Chargine's overall direction and the engineering programme behind RADAX, the company's hybrid axial\u2013radial flux, direct-drive generator architecture. That covers the technical direction of the architecture itself and the commercial model around it — licensing the design to the manufacturers who build machines at scale, rather than becoming a manufacturer and competing with them.",
       "He works directly with the engineering and commercial teams evaluating RADAX, and represents Recharga Chargine to manufacturers, investors and the wider clean-energy community.",
     ],
-    portrait: "/team/sehej-sharma.png",
+    portrait: "/team/sehej-sharma.webp",
     focus: [
       {
         title: "Company direction",
@@ -151,7 +155,7 @@ export const founders: Founder[] = [
       "He runs execution across the RADAX programme — turning the architecture into something a manufacturer's engineering team can assess against a real platform, and building the operational groundwork a technology-licensing business depends on.",
       "His work sits where the engineering programme meets the commercial one: how the architecture is delivered, how partnerships are structured, and how the company runs day to day.",
     ],
-    portrait: "/team/ali-electricwala.png",
+    portrait: "/team/ali-electricwala.webp",
     focus: [
       {
         title: "Programme execution",

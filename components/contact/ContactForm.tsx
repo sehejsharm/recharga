@@ -1,53 +1,88 @@
 "use client";
 
-import { useActionState, useEffect, useId, useRef } from "react";
-import { useFormStatus } from "react-dom";
-import { submitContact } from "@/app/contact/actions";
+import { useEffect, useId, useRef, useState } from "react";
 import { IconArrowRight } from "@/components/graphics/Icons";
-import { INITIAL_CONTACT_STATE, INTERESTS } from "@/lib/contact";
-
-function SubmitButton() {
-  const { pending } = useFormStatus();
-  return (
-    <button
-      type="submit"
-      disabled={pending}
-      className="btn-primary group w-full sm:w-auto disabled:cursor-not-allowed disabled:opacity-60"
-    >
-      {pending ? "Sending…" : "Send message"}
-      {!pending && (
-        <IconArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-      )}
-    </button>
-  );
-}
+import {
+  CONTACT_ENDPOINT,
+  INITIAL_CONTACT_STATE,
+  INTERESTS,
+  type ContactState,
+} from "@/lib/contact";
 
 export function ContactForm() {
-  const [state, formAction] = useActionState(
-    submitContact,
-    INITIAL_CONTACT_STATE,
-  );
+  const [state, setState] = useState<ContactState>(INITIAL_CONTACT_STATE);
+  const [pending, setPending] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const statusRef = useRef<HTMLParagraphElement>(null);
   const uid = useId();
 
-  // Clear the form on success and move focus to the confirmation so the
-  // outcome is announced rather than silently appearing.
+  // Move focus to the confirmation so the outcome is announced rather than
+  // silently appearing somewhere below the button.
   useEffect(() => {
-    if (state.status === "success") {
-      formRef.current?.reset();
-      statusRef.current?.focus();
-    }
+    if (state.status === "success") statusRef.current?.focus();
   }, [state.status]);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (pending) return;
+
+    const form = event.currentTarget;
+    setPending(true);
+    setState(INITIAL_CONTACT_STATE);
+
+    try {
+      const response = await fetch(CONTACT_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(
+          Object.fromEntries(new FormData(form).entries()),
+        ),
+      });
+
+      // A non-JSON body means the endpoint is missing or misconfigured —
+      // never report success in that case.
+      let result: ContactState | null = null;
+      try {
+        result = (await response.json()) as ContactState;
+      } catch {
+        result = null;
+      }
+
+      if (result && typeof result.message === "string") {
+        setState(result);
+        if (result.status === "success") form.reset();
+      } else {
+        setState({
+          status: "error",
+          message:
+            "We couldn't send that just now. Please email admin@rechargachargine.com directly.",
+        });
+      }
+    } catch {
+      setState({
+        status: "error",
+        message:
+          "That didn't send — please check your connection, or email admin@rechargachargine.com directly.",
+      });
+    } finally {
+      setPending(false);
+    }
+  }
 
   const fieldId = (name: string) => `${uid}-${name}`;
   const errorId = (name: string) => `${uid}-${name}-error`;
-
-  const describedBy = (name: keyof NonNullable<typeof state.errors>) =>
+  const describedBy = (name: keyof NonNullable<ContactState["errors"]>) =>
     state.errors?.[name] ? errorId(name) : undefined;
 
   return (
-    <form ref={formRef} action={formAction} noValidate className="space-y-6">
+    <form
+      ref={formRef}
+      onSubmit={handleSubmit}
+      action={CONTACT_ENDPOINT}
+      method="post"
+      noValidate
+      className="space-y-6"
+    >
       {/* Honeypot. Hidden from people and from assistive tech; bots fill it. */}
       <div aria-hidden="true" className="absolute h-0 w-0 overflow-hidden">
         <label htmlFor={fieldId("website")}>
@@ -177,7 +212,16 @@ export function ContactForm() {
       </div>
 
       <div className="flex flex-col gap-5 pt-2 sm:flex-row sm:items-center sm:justify-between">
-        <SubmitButton />
+        <button
+          type="submit"
+          disabled={pending}
+          className="btn-primary group w-full sm:w-auto disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {pending ? "Sending…" : "Send message"}
+          {!pending && (
+            <IconArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+          )}
+        </button>
         <p className="max-w-xs text-xs leading-relaxed text-ink-3">
           We use your details only to reply to this enquiry. We don&rsquo;t sell
           them, and we don&rsquo;t add you to a mailing list.
