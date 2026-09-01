@@ -259,6 +259,15 @@ export default async function FounderPage({
                       The whole team
                       <IconArrowRight className="h-4 w-4" />
                     </Link>
+                    {founder.photosPath && (
+                      <Link
+                        href={founder.photosPath}
+                        className="link-draw text-ink"
+                      >
+                        Photos of {founder.name.split(" ")[0]}
+                        <IconArrowRight className="h-4 w-4" />
+                      </Link>
+                    )}
                   </div>
                 </Reveal>
               </div>

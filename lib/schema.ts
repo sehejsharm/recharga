@@ -20,6 +20,10 @@ const compact = (obj: Json): Json =>
     }),
   );
 
+/** Emits a bare value for a single entry, an array for several, nothing for none. */
+const singleOrList = <T,>(items: T[]): T | T[] | undefined =>
+  items.length === 0 ? undefined : items.length === 1 ? items[0] : items;
+
 export const ORG_ID = absoluteUrl("/#organization");
 export const SITE_ID = absoluteUrl("/#website");
 
@@ -43,7 +47,7 @@ export const organizationSchema = (): Json =>
     logo: absoluteUrl("/logo.svg"),
     image: absoluteUrl("/icon-512.png"),
     description:
-      "DPIIT-recognised deep-tech clean-energy startup developing the RADAX Generator, a hybrid axial-radial flux, direct-drive generator architecture for wind turbines, licensed to OEMs.",
+      "DPIIT-recognised deep-tech startup developing the RADAX Generator, a hybrid axial-radial flux, direct-drive generator architecture for wind turbines, licensed to manufacturers.",
     foundingDate: company.founded,
     foundingLocation: compact({
       "@type": "Place",
@@ -104,12 +108,20 @@ export const personSchema = (founder: Founder): Json =>
     givenName: founder.name.split(" ")[0],
     familyName: founder.name.split(" ").slice(1).join(" ") || undefined,
     jobTitle: founder.role,
-    description: founder.summary,
+    description: founder.schemaDescription ?? founder.summary,
     // The full bio, so the entity carries real substance rather than a label.
     disambiguatingDescription: founder.bio[0],
     url: absoluteUrl(`/team/${founder.slug}`),
     mainEntityOfPage: absoluteUrl(`/team/${founder.slug}`),
-    image: founder.portrait ? absoluteUrl(founder.portrait) : undefined,
+    // Local portrait first, then any canonical off-site image. A single URL
+    // stays a string so the shape does not change for founders without one.
+    image: singleOrList([
+      ...(founder.portrait ? [absoluteUrl(founder.portrait)] : []),
+      ...(founder.schemaImages ?? []),
+    ]),
+    alumniOf: founder.alumniOf
+      ? { "@type": "EducationalOrganization", name: founder.alumniOf }
+      : undefined,
     worksFor: {
       "@type": "Organization",
       "@id": ORG_ID,
@@ -127,7 +139,7 @@ export const personSchema = (founder: Founder): Json =>
         addressCountry: company.countryCode,
       },
     }),
-    sameAs: founder.sameAs,
+    sameAs: founder.schemaSameAs ?? founder.sameAs,
   });
 
 /**
@@ -200,6 +212,38 @@ export const webPageSchema = (opts: {
   isPartOf: { "@id": SITE_ID },
   about: { "@id": ORG_ID },
   inLanguage: "en",
+});
+
+/**
+ * ImageGallery for a founder's photo page.
+ *
+ * The images hang off the same Person `@id` as the profile page, so the two
+ * pages describe one entity rather than two. `alt` is emitted as
+ * ImageObject.name and the visible figcaption as ImageObject.caption, matching
+ * how the supplied source paired them.
+ */
+export const imageGallerySchema = (opts: {
+  founder: Founder;
+  path: string;
+  name: string;
+  description: string;
+  images: { src: string; alt: string; caption: string }[];
+}): Json => ({
+  "@type": "ImageGallery",
+  "@id": absoluteUrl(`${opts.path}#gallery`),
+  url: absoluteUrl(opts.path),
+  name: opts.name,
+  description: opts.description,
+  isPartOf: { "@id": SITE_ID },
+  inLanguage: "en",
+  about: { "@id": absoluteUrl(`/team/${opts.founder.slug}#person`) },
+  mainEntity: { "@id": absoluteUrl(`/team/${opts.founder.slug}#person`) },
+  image: opts.images.map((img) => ({
+    "@type": "ImageObject",
+    contentUrl: img.src,
+    name: img.alt,
+    caption: img.caption,
+  })),
 });
 
 /** Wraps nodes in a single @graph so relationships resolve cleanly. */
