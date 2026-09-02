@@ -5,6 +5,7 @@ import { IconArrowRight } from "@/components/graphics/Icons";
 import { Reveal } from "@/components/motion/Reveal";
 import { CtaBand } from "@/components/shared/CtaBand";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { GalleryFigure } from "@/components/shared/GalleryFigure";
 import { gallerySections, galleryImages } from "@/lib/gallery";
 import {
   breadcrumbSchema,
@@ -103,27 +104,15 @@ export default function SehejSharmaPhotosPage() {
             <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {section.images.map((image, i) => (
                 <Reveal key={image.src} delay={(i % 3) * 0.06} y={20}>
-                  <figure className="overflow-hidden rounded-2xl border border-hairline bg-surface-1">
-                    {/*
-                      Plain <img>, not next/image: this is a static export with
-                      the optimiser off, and these files live on Wikimedia
-                      Commons rather than in /public. The markup is the set
-                      supplied by the founder, alt text included.
-                    */}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={image.src}
-                      alt={image.alt}
-                      loading="lazy"
-                      decoding="async"
-                      width={image.width}
-                      height={image.height}
-                      className="block h-56 w-full object-cover"
-                    />
-                    <figcaption className="px-4 py-3 text-sm text-ink-2">
-                      {image.caption}
-                    </figcaption>
-                  </figure>
+                  {/* GalleryFigure hides its own card if the image fails to
+                      load, so a missing source never shows as a broken box. */}
+                  <GalleryFigure
+                    src={image.src}
+                    alt={image.alt}
+                    caption={image.caption}
+                    width={image.width}
+                    height={image.height}
+                  />
                 </Reveal>
               ))}
             </div>
