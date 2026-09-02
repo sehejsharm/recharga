@@ -126,6 +126,10 @@ export default async function FounderPage({
                       rel="noopener noreferrer me"
                       className="btn-ghost !px-5 !py-2.5 !text-sm"
                     >
+                      {/* Full name in the accessible/crawlable text ("Sehej
+                          Sharma on Instagram") without changing the visible
+                          label — helps Google associate the profile with him. */}
+                      <span className="sr-only">{founder.name} on </span>
                       {profileLabel(url)}
                       <IconArrowRight className="h-3.5 w-3.5" />
                     </a>
@@ -332,6 +336,7 @@ function profileLabel(url: string) {
     if (host.includes("linkedin")) return "LinkedIn";
     if (host.includes("x.com") || host.includes("twitter")) return "X";
     if (host.includes("crunchbase")) return "Crunchbase";
+    if (host.includes("instagram")) return "Instagram";
     if (host.includes("github")) return "GitHub";
     return host;
   } catch {

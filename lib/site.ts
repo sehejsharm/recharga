@@ -165,14 +165,20 @@ export const founders: Founder[] = [
         body: "First point of contact for manufacturers, investors and press.",
       },
     ],
+    // Rendered as real rel="me" links on the profile so Google can crawl them
+    // and tie the accounts to his name (see the profile page). Order is the
+    // display order of the buttons.
     sameAs: profileList(process.env.NEXT_PUBLIC_SEHEJ_PROFILES, [
+      "https://www.instagram.com/sehejsharma03",
+      "https://x.com/thisissehej",
       "https://www.linkedin.com/in/sehejsharma",
     ]),
-    // Entity references beyond the links shown on the page. The LinkedIn URL
-    // matches the button above: /in/sehejsharma is the claimed vanity URL, and
-    // supersedes the auto-generated /in/sehej-sharma-5b2151234 this once used.
+    // The full entity set for Person.sameAs — the visible links above plus the
+    // references that are not page links (Wikidata, Crunchbase, sister company).
     schemaSameAs: [
       "https://www.wikidata.org/wiki/Q141209007",
+      "https://www.instagram.com/sehejsharma03",
+      "https://x.com/thisissehej",
       "https://www.linkedin.com/in/sehejsharma",
       "https://www.crunchbase.com/person/sehej-sharma",
       "https://focusrealm.org/team/sehej-sharma",
