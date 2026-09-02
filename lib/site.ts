@@ -62,8 +62,20 @@ export const company = {
    */
   email: env(process.env.NEXT_PUBLIC_CONTACT_EMAIL) ?? "admin@rechargachargine.com",
 
-  /** Official company profiles for Organization.sameAs. */
-  profiles: profileList(process.env.NEXT_PUBLIC_ORG_PROFILES),
+  /**
+   * Official company profiles for Organization.sameAs — the property Google
+   * uses to tie this site to the same entity elsewhere. Founder-confirmed, so
+   * they ship as the fallback rather than waiting on an env var to be set.
+   *
+   * Wikidata Q141209007 is deliberately absent: a Q-item identifies exactly
+   * one entity, and that one is Sehej Sharma the person (it is cited as his
+   * on Focus Realm too). It belongs on Person.sameAs only — claiming it here
+   * as well would tell Google the company and the person are one entity.
+   */
+  profiles: profileList(process.env.NEXT_PUBLIC_ORG_PROFILES, [
+    "https://www.crunchbase.com/organization/recharga-chargine",
+    "https://www.linkedin.com/company/rechargachargine",
+  ]),
 } as const;
 
 export const company_address_line = [
@@ -94,8 +106,29 @@ export type Founder = {
   portrait: string | null;
   /** Short, factual responsibility areas shown as a list on the profile. */
   focus: { title: string; body: string }[];
-  /** Real, authoritative profile URLs for Person.sameAs. */
+  /** Real, authoritative profile URLs, rendered as links on the profile page. */
   sameAs: string[];
+  /**
+   * Entity-resolution profiles for Person.sameAs, when they differ from the
+   * links shown on the page. Deliberately separate: adding a Wikidata item or a
+   * sister-company profile should strengthen the structured data without
+   * changing what the page renders. Replaces `sameAs` in JSON-LD when set.
+   */
+  schemaSameAs?: string[];
+  /**
+   * Person.description, when the schema should say more than the one-line
+   * `summary` shown on cards. Structured data only — never rendered.
+   */
+  schemaDescription?: string;
+  /**
+   * Additional portrait URLs for Person.image, beyond the local `portrait`.
+   * A canonical, freely-licensed image helps a knowledge panel resolve.
+   */
+  schemaImages?: string[];
+  /** Founder-supplied education, emitted as Person.alumniOf. */
+  alumniOf?: string;
+  /** A photo page for this person, linked from the profile. */
+  photosPath?: string;
   /** Topics the person works on — feeds Person.knowsAbout for topical relevance. */
   knowsAbout: string[];
 };
@@ -135,6 +168,22 @@ export const founders: Founder[] = [
     sameAs: profileList(process.env.NEXT_PUBLIC_SEHEJ_PROFILES, [
       "https://www.linkedin.com/in/sehej-sharma-5b2151234/",
     ]),
+    // Entity references, not page links. Note this carries a different
+    // LinkedIn vanity URL to the button above (/in/sehejsharma); both were
+    // founder-supplied and only one can be current — see CONTENT-TODO.md.
+    schemaSameAs: [
+      "https://www.wikidata.org/wiki/Q141209007",
+      "https://www.linkedin.com/in/sehejsharma",
+      "https://www.crunchbase.com/person/sehej-sharma",
+      "https://focusrealm.org/team/sehej-sharma",
+    ],
+    schemaDescription:
+      "Founder & CEO of Recharga Chargine (RADAX wind-turbine generator) and Co-Founder & CEO of Focus Realm. Based in Jaipur, India.",
+    schemaImages: [
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Sehej%20Sharma.png",
+    ],
+    alumniOf: "Neerja Modi School",
+    photosPath: "/about-sehej-sharma",
     knowsAbout: [
       "Wind turbine generator technology",
       "Axial flux and radial flux generator topologies",
@@ -210,5 +259,14 @@ export const routes = [
     priority: 0.9,
     changeFrequency: "monthly" as const,
   })),
+  // Photo pages sit just under their profile: supporting evidence for the
+  // same entity, not a competing landing page for the name.
+  ...founders
+    .filter((f) => f.photosPath)
+    .map((f) => ({
+      path: f.photosPath as string,
+      priority: 0.7,
+      changeFrequency: "monthly" as const,
+    })),
   { path: "/contact", priority: 0.6, changeFrequency: "yearly" as const },
 ];

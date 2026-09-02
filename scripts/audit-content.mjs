@@ -19,6 +19,7 @@ const ROUTES = [
   "/team",
   "/team/sehej-sharma",
   "/team/ali-electricwala",
+  "/about-sehej-sharma",
   "/contact",
 ];
 
@@ -177,6 +178,18 @@ function jsonLdBlocks(html) {
   ].map((m) => m[1]);
 }
 
+/**
+ * Blanks percent-escape sequences before rule matching.
+ *
+ * URLs are part of the haystack on purpose (several rules deliberately look at
+ * them), but percent-encoding invents digit+letter pairs that are not in the
+ * prose: "doesn't" encodes to "doesn%27t", which the mass rule reads as a
+ * "27 t" weight claim. Real copy never contains a %XX sequence.
+ */
+function stripPercentEscapes(text) {
+  return text.replace(/%[0-9A-Fa-f]{2}/g, " ");
+}
+
 function metaContent(html) {
   return [...html.matchAll(/<meta[^>]+content="([^"]*)"/gi)]
     .map((m) => m[1])
@@ -196,9 +209,9 @@ for (const route of ROUTES) {
 
   const html = await res.text();
   const haystacks = [
-    ["prose", toText(html)],
-    ["meta", metaContent(html)],
-    ["json-ld", jsonLdBlocks(html).join(" ")],
+    ["prose", stripPercentEscapes(toText(html))],
+    ["meta", stripPercentEscapes(metaContent(html))],
+    ["json-ld", stripPercentEscapes(jsonLdBlocks(html).join(" "))],
   ];
 
   let routeFailures = 0;
