@@ -166,11 +166,11 @@ export const founders: Founder[] = [
       },
     ],
     sameAs: profileList(process.env.NEXT_PUBLIC_SEHEJ_PROFILES, [
-      "https://www.linkedin.com/in/sehej-sharma-5b2151234/",
+      "https://www.linkedin.com/in/sehejsharma",
     ]),
-    // Entity references, not page links. Note this carries a different
-    // LinkedIn vanity URL to the button above (/in/sehejsharma); both were
-    // founder-supplied and only one can be current — see CONTENT-TODO.md.
+    // Entity references beyond the links shown on the page. The LinkedIn URL
+    // matches the button above: /in/sehejsharma is the claimed vanity URL, and
+    // supersedes the auto-generated /in/sehej-sharma-5b2151234 this once used.
     schemaSameAs: [
       "https://www.wikidata.org/wiki/Q141209007",
       "https://www.linkedin.com/in/sehejsharma",

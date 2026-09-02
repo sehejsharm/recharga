@@ -50,7 +50,7 @@ Everything is in plain text in the page files (`app/*/page.tsx`) and
 Both LinkedIn URLs are now wired into `Person.sameAs` and rendered as buttons
 on each founder page:
 
-- Sehej Sharma → `linkedin.com/in/sehej-sharma-5b2151234`
+- Sehej Sharma → `linkedin.com/in/sehejsharma`
 - Ali Electricwala → `linkedin.com/in/ali-electricwala-190821261`
 
 They live in `lib/site.ts` and can still be overridden or extended via
