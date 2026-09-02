@@ -1,0 +1,159 @@
+# =============================================================================
+# Recharga Chargine — Apache / LiteSpeed configuration for Hostinger
+#
+# This file ships inside the built site. Upload it to public_html alongside
+# everything else; Hostinger's LiteSpeed reads .htaccess natively.
+#
+# It does five jobs:
+#   1. force HTTPS and a single canonical hostname
+#   2. serve extensionless URLs (/about -> about.html)
+#   3. use the site's own 404 page
+#   4. cache immutable build assets hard, HTML not at all
+#   5. set sensible security headers and enable compression
+# =============================================================================
+
+Options -Indexes +FollowSymLinks
+DirectoryIndex index.html
+
+# CRITICAL: the export writes both /about.html and an /about/ directory (the
+# latter holds that route's generated share card). With DirectorySlash on,
+# Apache would redirect /about to /about/, which has no index file, and every
+# page would 404. Off, plus the .html-first rewrite below, resolves it.
+DirectorySlash Off
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # ---------------------------------------------------------------------------
+  # 1. Canonical host + HTTPS
+  #
+  # Redirect http -> https and www -> apex in ONE hop, so link equity is not
+  # diluted across a redirect chain. If you would rather serve www as the
+  # canonical host, swap the two rules below and update NEXT_PUBLIC_SITE_URL.
+  # ---------------------------------------------------------------------------
+  RewriteCond %{HTTPS} !=on [OR]
+  RewriteCond %{HTTP_HOST} ^www\. [NC]
+  RewriteCond %{HTTP_HOST} ^(?:www\.)?(.+)$ [NC]
+  RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+
+  # ---------------------------------------------------------------------------
+  # 2. Clean URLs
+  #
+  # The static export writes /about.html, /team/sehej-sharma.html and so on.
+  # Serve those at their extensionless paths, and redirect anyone who lands on
+  # the .html form to the canonical URL so only one version is ever indexed.
+  # ---------------------------------------------------------------------------
+
+  # /about.html -> /about   (visible redirect, keeps one canonical URL)
+  RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
+  RewriteRule ^ /%1 [R=301,L,NE]
+
+  # /about -> about.html   (internal rewrite, URL stays clean)
+  #
+  # Deliberately NOT guarded by `!-d`: a matching directory exists for every
+  # route that has a share card, and the HTML must win. Real files are still
+  # safe — /logo.svg only rewrites if /logo.svg.html exists, which it does not.
+  RewriteCond %{REQUEST_FILENAME}\.html -f
+  RewriteRule ^(.+?)/?$ $1.html [L]
+
+  # Drop a trailing slash on anything that is not a real directory.
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.+)/$ /$1 [R=301,L]
+</IfModule>
+
+# -----------------------------------------------------------------------------
+# 3. Error page
+# -----------------------------------------------------------------------------
+ErrorDocument 404 /404.html
+
+# -----------------------------------------------------------------------------
+# 4. Caching
+#
+# Everything under /_next/static is content-hashed, so it can be cached
+# forever. HTML must never be cached, or visitors keep seeing an old build
+# after a deploy.
+# -----------------------------------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 month"
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType application/json "access plus 0 seconds"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+<IfModule mod_headers.c>
+  # Immutable, content-hashed build output.
+  <FilesMatch "\.(js|css|woff2|svg|png|jpg|jpeg|webp|avif|ico)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  # HTML and generated metadata must always be revalidated.
+  <FilesMatch "\.(html|json|xml|txt|webmanifest)$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+
+  # ---------------------------------------------------------------------------
+  # 5. Security headers
+  # ---------------------------------------------------------------------------
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" env=HTTPS
+
+  # The site loads no third-party scripts, frames or fonts. Inline styles and
+  # one small inline script (the reduced-motion gate) are required, hence
+  # 'unsafe-inline'. Add hosts here if analytics is introduced later.
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'self'; base-uri 'self'; object-src 'none'"
+
+  # Never let a stale ETag fight the Cache-Control rules above.
+  Header unset ETag
+</IfModule>
+FileETag None
+
+# -----------------------------------------------------------------------------
+# Compression
+# -----------------------------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE application/xml application/rss+xml
+  AddOutputFilterByType DEFLATE image/svg+xml font/woff2
+</IfModule>
+
+# -----------------------------------------------------------------------------
+# Correct types for anything the host might not know
+# -----------------------------------------------------------------------------
+<IfModule mod_mime.c>
+  AddType application/manifest+json .webmanifest
+  AddType image/svg+xml .svg
+  AddType font/woff2 .woff2
+  AddType image/avif .avif
+  AddType image/webp .webp
+</IfModule>
+
+# Next writes the generated share cards as extensionless files (e.g.
+# /technology/opengraph-image). Without an explicit type the server sends
+# them as octet-stream and every social preview silently fails.
+<FilesMatch "opengraph-image$">
+  ForceType image/png
+  Header set Content-Type "image/png"
+</FilesMatch>
+
+# -----------------------------------------------------------------------------
+# Block access to anything that should never be public
+# -----------------------------------------------------------------------------
+<FilesMatch "^\.(env|git|htaccess|htpasswd)|\.(json|lock|md|ts|tsx)$">
+  Require all denied
+</FilesMatch>
+
+# ...but the files the site genuinely serves must stay reachable.
+<FilesMatch "^(manifest\.webmanifest|site\.webmanifest)$">
+  Require all granted
+</FilesMatch>

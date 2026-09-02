@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+
+Host: https://rechargachargine.com/
+Sitemap: https://rechargachargine.com/sitemap.xml

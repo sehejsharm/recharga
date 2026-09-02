@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Recharga">
+  <title>Recharga</title>
+  <g fill="#00FF5E">
+    <path d="M212 116 A99 99 0 1 0 384 208 Z" />
+    <path d="M240 232 L118 341 L203 347 L137 452 L293 314 L231 306 Z" />
+  </g>
+  <g stroke="#00FF5E" stroke-width="22" stroke-linecap="round" fill="none">
+    <path d="M256 132 L293 63" />
+    <path d="M351 183 L388 113" />
+  </g>
+</svg>
