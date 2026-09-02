@@ -66,9 +66,13 @@ export const company = {
    * Official company profiles for Organization.sameAs — the property Google
    * uses to tie this site to the same entity elsewhere. Founder-confirmed, so
    * they ship as the fallback rather than waiting on an env var to be set.
+   *
+   * Wikidata Q141209007 is deliberately absent: a Q-item identifies exactly
+   * one entity, and that one is Sehej Sharma the person (it is cited as his
+   * on Focus Realm too). It belongs on Person.sameAs only — claiming it here
+   * as well would tell Google the company and the person are one entity.
    */
   profiles: profileList(process.env.NEXT_PUBLIC_ORG_PROFILES, [
-    "https://www.wikidata.org/wiki/Q141209007",
     "https://www.crunchbase.com/organization/recharga-chargine",
     "https://www.linkedin.com/company/rechargachargine",
   ]),
