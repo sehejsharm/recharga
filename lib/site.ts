@@ -165,16 +165,14 @@ export const founders: Founder[] = [
         body: "First point of contact for manufacturers, investors and press.",
       },
     ],
-    // Rendered as real rel="me" links on the profile so Google can crawl them
-    // and tie the accounts to his name (see the profile page). Order is the
-    // display order of the buttons.
+    // Rendered as the profile's visible link buttons. LinkedIn only: Instagram
+    // and X read as too informal for the page, so they are kept out of the UI
+    // but retained in schemaSameAs below for entity association.
     sameAs: profileList(process.env.NEXT_PUBLIC_SEHEJ_PROFILES, [
-      "https://www.instagram.com/sehejsharma03",
-      "https://x.com/thisissehej",
       "https://www.linkedin.com/in/sehejsharma",
     ]),
-    // The full entity set for Person.sameAs — the visible links above plus the
-    // references that are not page links (Wikidata, Crunchbase, sister company).
+    // The full entity set for Person.sameAs — this is what ties the accounts to
+    // his name for search. Instagram and X stay here (not shown as buttons).
     schemaSameAs: [
       "https://www.wikidata.org/wiki/Q141209007",
       "https://www.instagram.com/sehejsharma03",
